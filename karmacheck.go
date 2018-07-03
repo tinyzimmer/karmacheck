@@ -30,25 +30,28 @@ import (
 )
 
 const (
-	EXIT_NO_ARGS                    = 1
-	EXIT_INVALID_SUBREDDIT          = 2
-	REDDIT_URL                      = "https://www.reddit.com"
-	KARMA_DECAY_URL                 = "https://www.karmadecay.com"
-	RSS_ARG                         = ".rss"
-	RSS_URL_FORMAT                  = "%s/r/%s/new/%s"
-	REQUEST_AGENT_HEADER            = "User-Agent"
-	REQUEST_AGENT                   = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36"
-	NO_CONTENT_ERROR                = "KarmaDecay could not locate any media in the post"
-	NO_SIMILAR_POSTS_ERROR          = "KarmaDecay could not find any similar posts"
-	MALFORMED_URL_ERROR             = "Malformed URL: %s"
-	NO_SUBREDDIT_ERROR              = "Invalid subreddit"
-	KARMA_DECAY_NO_CONTENT_STRING   = "Unable to find an image"
-	LOCAL_FOUND_MATCHES             = "Found matches. Below is the reddit comment text."
-	MARKDOWN_SEARCH_REGEX           = "Anyone[^<]*"
-	MARKDOWN_VALID_CHECK            = "[Source: karmadecay]"
-	FEEDTRACKER_CHECKED_ENTRIES_MAX = 100
-	REDDIT_CHECK_SLEEP_TIME         = 10
-	KARMA_DECAY_SLEEP_TIME          = 3
+	EXIT_NO_ARGS                         = 1
+	EXIT_INVALID_SUBREDDIT               = 2
+	REDDIT_URL                           = "https://www.reddit.com"
+	KARMA_DECAY_URL                      = "https://www.karmadecay.com"
+	RSS_ARG                              = ".rss"
+	RSS_URL_FORMAT                       = "%s/r/%s/new/%s"
+	REQUEST_AGENT_HEADER                 = "User-Agent"
+	REQUEST_AGENT                        = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36"
+	NO_CONTENT_ERROR                     = "KarmaDecay could not locate any media in the post"
+	NO_SIMILAR_POSTS_ERROR               = "KarmaDecay could not find any similar posts"
+	MALFORMED_URL_ERROR                  = "Malformed URL: %s"
+	NO_SUBREDDIT_ERROR                   = "Invalid subreddit"
+	KARMA_DECAY_NO_CONTENT_STRING        = "Unable to find an image"
+	LOCAL_FOUND_MATCHES_MESSAGE          = "Found matches. Below is the reddit comment text."
+	LOCAL_BELOW_CONFIDENCE_MESSAGE       = "KarmaDecay response scored below the confidence threshold"
+	MARKDOWN_SEARCH_REGEX                = "Anyone[^<]*"
+	MARKDOWN_LINK_REGEX                  = "\\[.*\\]\\(.*\\)"
+	MARKDOWN_VALID_CHECK                 = "[Source: karmadecay]"
+	FEEDTRACKER_CHECKED_ENTRIES_MAX      = 100
+	REDDIT_CHECK_SLEEP_TIME              = 10
+	KARMA_DECAY_SLEEP_TIME               = 3
+	KARMA_DECAY_COMMENT_LINKS_CONFIDENCE = 2
 )
 
 var (
@@ -64,6 +67,18 @@ func checkSub(sub *string) (err error) {
 	}
 	return
 
+}
+
+func kdIsConfident(content []byte) (res bool) {
+
+	re := regexp.MustCompile(MARKDOWN_LINK_REGEX)
+	data := re.FindAll(content, -1)
+	if len(data) <= KARMA_DECAY_COMMENT_LINKS_CONFIDENCE {
+		res = false
+	} else {
+		res = true
+	}
+	return
 }
 
 func getMarkdownComment(content []byte) (comment string) {

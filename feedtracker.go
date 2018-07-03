@@ -88,8 +88,12 @@ func (f *FeedTracker) Run() {
 				if err != nil {
 					log.Println(err)
 				} else {
-					log.Println(LOCAL_FOUND_MATCHES)
-					fmt.Println(res)
+					if kdIsConfident([]byte(res)) {
+						log.Println(LOCAL_FOUND_MATCHES_MESSAGE)
+						fmt.Println(res)
+					} else {
+						log.Println(LOCAL_BELOW_CONFIDENCE_MESSAGE)
+					}
 				}
 				f.RecordEntry(entry)
 				time.Sleep(time.Second * KARMA_DECAY_SLEEP_TIME)
