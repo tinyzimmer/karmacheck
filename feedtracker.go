@@ -146,7 +146,7 @@ func (f *FeedTracker) RemoveCheckedEntry(i int) {
 
 func (f *FeedTracker) IsRecorded(entry Entry) bool {
 	for _, item := range f.CheckedEntries {
-		if item.Title == entry.Title {
+		if item.Link.Href == entry.Link.Href {
 			return true
 		}
 	}
