@@ -137,7 +137,7 @@ func getCommentUrl(fullUrl string) (commentUrl string, err error) {
 
 	splitUrl := strings.Split(fullUrl, "/")
 	if len(splitUrl) <= 4 { // make sure the URL split is of valid length
-		err = errors.New(MALFORMED_URL_ERROR)
+		err = errors.New(fmt.Sprintf(MALFORMED_URL_ERROR, fullUrl))
 		return
 	}
 	commentUrl = strings.Join(splitUrl[3:], "/")
