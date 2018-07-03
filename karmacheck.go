@@ -33,6 +33,7 @@ const (
 	REDDIT_URL                    = "https://www.reddit.com"
 	KARMA_DECAY_URL               = "https://www.karmadecay.com"
 	RSS_ARG                       = ".rss"
+	RSS_URL_FORMAT                = "%s/r/%s/new/%s"
 	REQUEST_AGENT_HEADER          = "User-Agent"
 	REQUEST_AGENT                 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36"
 	NO_CONTENT_ERROR              = "KarmaDecay could not locate any media in the post"
@@ -65,10 +66,9 @@ type Category struct {
 }
 
 type Link struct {
-	Rel      string   `xml:"rel,attr"`
-	Href     string   `xml:"href,attr"`
-	Type     string   `xml:"type,attr"`
-	Category Category `xml:"category"`
+	Rel  string `xml:"rel,attr"`
+	Href string `xml:"href,attr"`
+	Type string `xml:"type,attr"`
 }
 
 type Entry struct {
@@ -103,6 +103,9 @@ func getMarkdownComment(content []byte) (comment string) {
 	re := regexp.MustCompile(MARKDOWN_SEARCH_REGEX)
 	data := re.Find(content)
 	comment = string(data)
+	if !strings.Contains(comment, "[Source: karmadecay]") { // title flipped the regex
+		comment = ""
+	}
 	return
 
 }
@@ -153,20 +156,24 @@ func getUrl(url string) (response []byte, err error) {
 
 }
 
-func checkKarmaDecay(redditFullUrl string) (resp string, err error) {
+func checkKarmaDecay(entry Entry) (resp string, err error) {
 
 	// Make sure our URL is legit
 
-	if !strings.Contains(redditFullUrl, "reddit") {
-		err = errors.New(fmt.Sprintf(MALFORMED_URL_ERROR, redditFullUrl))
+	if !strings.Contains(entry.Link.Href, "reddit") {
+		err = errors.New(fmt.Sprintf(MALFORMED_URL_ERROR, entry.Link.Href))
 		return
 	}
 
 	// Replace the reddit part of the URL with karmadecay
 
-	karmaUrl := strings.Replace(redditFullUrl, REDDIT_URL, KARMA_DECAY_URL, 1)
+	karmaUrl := strings.Replace(entry.Link.Href, REDDIT_URL, KARMA_DECAY_URL, 1)
 	commentUrl := getCommentUrl(karmaUrl)
 	log.Printf("Checking KarmaDecay for: %s\n", commentUrl)
+	log.Printf("Author: %s\n", entry.Author.Name)
+	log.Printf("Title: %s\n", entry.Title)
+	log.Printf("Link: %s", entry.Link.Href)
+	log.Printf("Created: %s", entry.Updated)
 
 	// Get the content of the KarmaDecay page for that post. May take 10-20
 	// seconds on a post that is indeed OC
@@ -193,7 +200,7 @@ func getLatestSubmissions(subreddit *string) (feed *Feed, err error) {
 
 	// Poll the reddit RSS feed for the latest submissions from a subreddit
 
-	url := fmt.Sprintf("%s/r/%s/new/%s", REDDIT_URL, *subreddit, RSS_ARG)
+	url := fmt.Sprintf(RSS_URL_FORMAT, REDDIT_URL, *subreddit, RSS_ARG)
 	resp, err := getUrl(url)
 	xml.Unmarshal(resp, &feed)
 	return
@@ -212,7 +219,7 @@ func main() {
 		log.Fatal(err)
 	}
 	// check the most recent against KarmaDecay
-	res, err := checkKarmaDecay(data.Entries[0].Link.Href)
+	res, err := checkKarmaDecay(data.Entries[0])
 	if err != nil {
 		log.Println(err)
 	} else {
