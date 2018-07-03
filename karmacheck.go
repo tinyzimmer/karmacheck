@@ -208,6 +208,9 @@ func getLatestSubmissions(subreddit *string) (feed *Feed, err error) {
 
 	url := fmt.Sprintf(RSS_URL_FORMAT, REDDIT_URL, *subreddit, RSS_ARG)
 	resp, err := getUrl(url)
+	if err != nil {
+		return
+	}
 	xml.Unmarshal(resp, &feed)
 	return
 
