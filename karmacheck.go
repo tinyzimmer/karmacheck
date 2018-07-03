@@ -43,11 +43,14 @@ const (
 	KARMA_DECAY_NO_CONTENT_STRING = "Unable to find an image"
 	LOCAL_FOUND_MATCHES           = "Found matches. Below is the reddit comment text."
 	MARKDOWN_SEARCH_REGEX         = "Anyone[^<]*"
+	MARKDOWN_VALID_CHECK          = "[Source: karmadecay]"
 )
 
 var (
 	subreddit = flag.String("s", "", "Subreddit to watch")
 )
+
+// Type definitions for Reddit RSS feed parsing
 
 type Feed struct {
 	Namespace string   `xml:"xmlns,attr"`
@@ -103,7 +106,7 @@ func getMarkdownComment(content []byte) (comment string) {
 	re := regexp.MustCompile(MARKDOWN_SEARCH_REGEX)
 	data := re.Find(content)
 	comment = string(data)
-	if !strings.Contains(comment, "[Source: karmadecay]") { // title flipped the regex
+	if !strings.Contains(comment, MARKDOWN_VALID_CHECK) { // title flipped the regex
 		comment = ""
 	}
 	return
