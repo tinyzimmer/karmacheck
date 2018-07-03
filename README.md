@@ -1,7 +1,7 @@
 # karmacheck
 [![Build Status](https://www.travis-ci.com/tinyzimmer/karmacheck.svg?branch=master)](https://www.travis-ci.com/tinyzimmer/karmacheck)
 
-Unofficial KarmaDecay checker for Reddit
+Unofficial KarmaDecay checker for watching subreddits
 
 Currently watches a subreddit for new posts, and runs new submissions against KarmaDecay.
 The program fetches the markdown comment from the KarmaDecay page and prints it to the terminal.
