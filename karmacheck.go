@@ -18,7 +18,6 @@
 package main
 
 import (
-	"encoding/xml"
 	"errors"
 	"flag"
 	"fmt"
@@ -31,65 +30,30 @@ import (
 )
 
 const (
-	EXIT_NO_ARGS                  = 1
-	EXIT_INVALID_SUBREDDIT        = 2
-	REDDIT_URL                    = "https://www.reddit.com"
-	KARMA_DECAY_URL               = "https://www.karmadecay.com"
-	RSS_ARG                       = ".rss"
-	RSS_URL_FORMAT                = "%s/r/%s/new/%s"
-	REQUEST_AGENT_HEADER          = "User-Agent"
-	REQUEST_AGENT                 = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36"
-	NO_CONTENT_ERROR              = "KarmaDecay could not locate any media in the post"
-	NO_SIMILAR_POSTS_ERROR        = "KarmaDecay could not find any similar posts"
-	MALFORMED_URL_ERROR           = "Malformed URL: %s"
-	NO_SUBREDDIT_ERROR            = "Invalid subreddit"
-	KARMA_DECAY_NO_CONTENT_STRING = "Unable to find an image"
-	LOCAL_FOUND_MATCHES           = "Found matches. Below is the reddit comment text."
-	MARKDOWN_SEARCH_REGEX         = "Anyone[^<]*"
-	MARKDOWN_VALID_CHECK          = "[Source: karmadecay]"
+	EXIT_NO_ARGS                    = 1
+	EXIT_INVALID_SUBREDDIT          = 2
+	REDDIT_URL                      = "https://www.reddit.com"
+	KARMA_DECAY_URL                 = "https://www.karmadecay.com"
+	RSS_ARG                         = ".rss"
+	RSS_URL_FORMAT                  = "%s/r/%s/new/%s"
+	REQUEST_AGENT_HEADER            = "User-Agent"
+	REQUEST_AGENT                   = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36"
+	NO_CONTENT_ERROR                = "KarmaDecay could not locate any media in the post"
+	NO_SIMILAR_POSTS_ERROR          = "KarmaDecay could not find any similar posts"
+	MALFORMED_URL_ERROR             = "Malformed URL: %s"
+	NO_SUBREDDIT_ERROR              = "Invalid subreddit"
+	KARMA_DECAY_NO_CONTENT_STRING   = "Unable to find an image"
+	LOCAL_FOUND_MATCHES             = "Found matches. Below is the reddit comment text."
+	MARKDOWN_SEARCH_REGEX           = "Anyone[^<]*"
+	MARKDOWN_VALID_CHECK            = "[Source: karmadecay]"
+	FEEDTRACKER_CHECKED_ENTRIES_MAX = 100
+	REDDIT_CHECK_SLEEP_TIME         = 10
+	KARMA_DECAY_SLEEP_TIME          = 3
 )
 
 var (
 	subreddit = flag.String("s", "", "Subreddit to watch")
 )
-
-// Type definitions for Reddit RSS feed parsing
-
-type Feed struct {
-	Namespace string   `xml:"xmlns,attr"`
-	Category  Category `xml:"category"`
-	Updated   string   `xml:"updated"`
-	Icon      string   `xml:"icon"`
-	Id        string   `xml:"id"`
-	Links     []Link   `xml:"link"`
-	Title     string   `xml:"title"`
-	Entries   []Entry  `xml:"entry"`
-}
-
-type Category struct {
-	Term  string `xml:"term,attr"`
-	Label string `xml:"label,attr"`
-}
-
-type Link struct {
-	Rel  string `xml:"rel,attr"`
-	Href string `xml:"href,attr"`
-	Type string `xml:"type,attr"`
-}
-
-type Entry struct {
-	Author  Author `xml:"author"`
-	Content string `xml:"content"`
-	Id      string `xml:"id"`
-	Link    Link   `xml:"link"`
-	Updated string `xml:"updated"`
-	Title   string `xml:"title"`
-}
-
-type Author struct {
-	Name string `xml:"name"`
-	Uri  string `xml:"uri"`
-}
 
 func checkSub(sub *string) (err error) {
 
@@ -99,6 +63,7 @@ func checkSub(sub *string) (err error) {
 		err = errors.New(NO_SUBREDDIT_ERROR)
 	}
 	return
+
 }
 
 func getMarkdownComment(content []byte) (comment string) {
@@ -209,20 +174,6 @@ func checkKarmaDecay(entry Entry) (resp string, err error) {
 
 }
 
-func getLatestSubmissions(subreddit *string) (feed *Feed, err error) {
-
-	// Poll the reddit RSS feed for the latest submissions from a subreddit
-
-	url := fmt.Sprintf(RSS_URL_FORMAT, REDDIT_URL, *subreddit, RSS_ARG)
-	resp, err := getUrl(url)
-	if err != nil {
-		return
-	}
-	xml.Unmarshal(resp, &feed)
-	return
-
-}
-
 func main() {
 
 	if len(os.Args) == 1 {
@@ -236,17 +187,9 @@ func main() {
 		flag.Usage()
 		os.Exit(EXIT_INVALID_SUBREDDIT)
 	}
-	data, err := getLatestSubmissions(subreddit) // get latest reddit posts
-	if err != nil {
-		log.Fatal(err)
-	}
-	// check the most recent against KarmaDecay
-	res, err := checkKarmaDecay(data.Entries[0])
-	if err != nil {
-		log.Println(err)
-	} else {
-		log.Println(LOCAL_FOUND_MATCHES)
-		fmt.Println(res)
-	}
+
+	// Create a Reddit feed tracker and run it
+	tracker := FeedTracker{subreddit, []Entry{}}
+	tracker.Run()
 
 }
