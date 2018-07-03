@@ -25,11 +25,14 @@ import (
 	"io/ioutil"
 	"log"
 	"net/http"
+	"os"
 	"regexp"
 	"strings"
 )
 
 const (
+	EXIT_NO_ARGS                  = 1
+	EXIT_INVALID_SUBREDDIT        = 2
 	REDDIT_URL                    = "https://www.reddit.com"
 	KARMA_DECAY_URL               = "https://www.karmadecay.com"
 	RSS_ARG                       = ".rss"
@@ -39,7 +42,7 @@ const (
 	NO_CONTENT_ERROR              = "KarmaDecay could not locate any media in the post"
 	NO_SIMILAR_POSTS_ERROR        = "KarmaDecay could not find any similar posts"
 	MALFORMED_URL_ERROR           = "Malformed URL: %s"
-	NO_SUBREDDIT_ERROR            = "No subreddit specified"
+	NO_SUBREDDIT_ERROR            = "Invalid subreddit"
 	KARMA_DECAY_NO_CONTENT_STRING = "Unable to find an image"
 	LOCAL_FOUND_MATCHES           = "Found matches. Below is the reddit comment text."
 	MARKDOWN_SEARCH_REGEX         = "Anyone[^<]*"
@@ -212,10 +215,16 @@ func getLatestSubmissions(subreddit *string) (feed *Feed, err error) {
 
 func main() {
 
+	if len(os.Args) == 1 {
+		flag.Usage()
+		os.Exit(EXIT_NO_ARGS)
+	}
 	flag.Parse()
 	err := checkSub(subreddit) // make sure subreddit is defined
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		flag.Usage()
+		os.Exit(EXIT_INVALID_SUBREDDIT)
 	}
 	data, err := getLatestSubmissions(subreddit) // get latest reddit posts
 	if err != nil {
