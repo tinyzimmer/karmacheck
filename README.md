@@ -1,4 +1,6 @@
 # karmacheck
+[![Build Status](https://www.travis-ci.com/tinyzimmer/karmacheck.svg?branch=master)](https://www.travis-ci.com/tinyzimmer/karmacheck)
+
 Unofficial KarmaDecay checker for Reddit
 
 Currently watches a subreddit for new posts, and runs new submissions against KarmaDecay.
