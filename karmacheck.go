@@ -130,12 +130,16 @@ func hasContent(content []byte) (res bool) {
 
 }
 
-func getCommentUrl(fullUrl string) (commentUrl string) {
+func getCommentUrl(fullUrl string) (commentUrl string, err error) {
 
 	// removes https and the domain from a full URL. Just showing the
 	// subreddit/comment part of it.
 
 	splitUrl := strings.Split(fullUrl, "/")
+	if len(splitUrl) <= 4 { // make sure the URL split is of valid length
+		err = errors.New(MALFORMED_URL_ERROR)
+		return
+	}
 	commentUrl = strings.Join(splitUrl[3:], "/")
 	return
 
@@ -174,7 +178,10 @@ func checkKarmaDecay(entry Entry) (resp string, err error) {
 	// Replace the reddit part of the URL with karmadecay
 
 	karmaUrl := strings.Replace(entry.Link.Href, REDDIT_URL, KARMA_DECAY_URL, 1)
-	commentUrl := getCommentUrl(karmaUrl)
+	commentUrl, err := getCommentUrl(karmaUrl)
+	if err != nil {
+		return
+	}
 	log.Printf("Checking KarmaDecay for: %s\n", commentUrl)
 	log.Printf("Author: %s\n", entry.Author.Name)
 	log.Printf("Title: %s\n", entry.Title)
