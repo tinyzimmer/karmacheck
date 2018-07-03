@@ -8,12 +8,32 @@ The program fetches the markdown comment from the KarmaDecay page and prints it 
 
 Pre-compiled binaries for Windows, Linux, and macOS can be found in the [releases](https://github.com/tinyzimmer/karmacheck/releases) section.
 
+## Building
+
+ - Tested on Go 1.10.2 windows/linux/macOS
+
+#### Build
+
+Using go:
+
+```bash
+$> go get github.com/tinyzimmer/karmacheck
+```
+
+From git:
+
+```bash
+$> git clone https://github.com/tinyzimmer/karmacheck
+$> cd karmacheck
+$> go build .
+```
+
 ## Usage
 ```bash
 $> ./karmacheck -s <subreddit>
 ```
 
-### Example
+#### Example
 ```powershell
 PS C:\Users\tinyzimmer\Desktop\Development\karmacheck> .\karmacheck.exe -s funny
 2018/07/03 08:22:27 Checking KarmaDecay for: r/funny/comments/8vt1il/praise_the_ol_mighty/
