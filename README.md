@@ -1,7 +1,7 @@
 # karmacheck
 Unofficial KarmaDecay checker for Reddit
 
-Currently watches a subreddit for new posts, and runs new submissions against KarmaDecay
+Currently watches a subreddit for new posts, and runs new submissions against KarmaDecay.
 The program fetches the markdown comment from the KarmaDecay page and prints it to the terminal.
 
 Pre-compiled binaries for Windows, Linux, and macOS can be found in the [releases](https://github.com/tinyzimmer/karmacheck/releases) section.
