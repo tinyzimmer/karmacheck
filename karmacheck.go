@@ -37,7 +37,7 @@ const (
 	RSS_ARG                              = ".rss"
 	RSS_URL_FORMAT                       = "%s/r/%s/new/%s"
 	REQUEST_AGENT_HEADER                 = "User-Agent"
-	REQUEST_AGENT                        = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/66.0.3359.139 Safari/537.36"
+	REQUEST_AGENT                        = "RepostBot by u/jews4beer"
 	NO_CONTENT_ERROR                     = "KarmaDecay could not locate any media in the post"
 	NO_SIMILAR_POSTS_ERROR               = "KarmaDecay could not find any similar posts"
 	MALFORMED_URL_ERROR                  = "Malformed URL: %s"
