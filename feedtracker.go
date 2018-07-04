@@ -67,6 +67,7 @@ type Author struct {
 type FeedTracker struct {
 	Subreddit      string
 	Running        bool
+	Debug          bool
 	CheckedEntries []Entry
 }
 
@@ -76,7 +77,9 @@ func ManageTrackers(trackers []*FeedTracker) {
 	for {
 		active = 0
 		for _, tracker = range trackers {
-			log.Printf("Checking tracker: %+v\n", tracker)
+			if tracker.Debug {
+				log.Printf("DEBUG: Checking tracker: r/%s\n", tracker.Subreddit)
+			}
 			if tracker.Running {
 				active += 1
 			}
@@ -89,25 +92,29 @@ func ManageTrackers(trackers []*FeedTracker) {
 	}
 }
 
-func NewTracker(sub string) (f FeedTracker) {
+func NewTracker(sub string, debug bool) (f FeedTracker) {
 	f.Subreddit = sub
 	f.Running = true
+	f.Debug = debug
 	return
 }
 
 func (f *FeedTracker) Run() {
 
-	log.Println("Whitelisting pre-existing entries")
+	if f.Debug {
+		log.Println("DEBUG: Whitelisting pre-existing entries")
+	}
 	err := f.InitializeCheckedEntries() // skip over pre-existing posts
 	if err != nil {
 		f.Die()
 		return
 	}
-	log.Println("Subreddit tracker started")
+	log.Printf("Subreddit tracker started for r/%s\n", f.Subreddit)
 
 	for {
-
-		log.Printf("Polling subreddit: r/%s\n", f.Subreddit)
+		if f.Debug {
+			log.Printf("DEBUG: Polling subreddit: r/%s\n", f.Subreddit)
+		}
 		data, err := f.GetLatestSubmissions() // get latest reddit posts
 		if err != nil {
 			log.Printf("ERROR: Error polling results from sub r/%s: %s", f.Subreddit, err.Error())
@@ -156,7 +163,9 @@ func (f *FeedTracker) RecordEntry(entry Entry) {
 		f.RemoveCheckedEntry(0)
 	}
 	f.AddCheckedEntry(entry)
-	log.Printf("Recorded Entry: %s", entry.Title)
+	if f.Debug {
+		log.Printf("DEBUG: Recorded Entry: %s", entry.Title)
+	}
 }
 
 func (f *FeedTracker) GetLatestSubmissions() (entries []Entry, err error) {

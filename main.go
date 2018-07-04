@@ -52,6 +52,7 @@ const (
 )
 
 var (
+	debug      = flag.Bool("d", false, "Debug")
 	subreddits = flag.String("s", "", "Comma separated list of subs to watch")
 )
 
@@ -72,7 +73,7 @@ func main() {
 	activeTrackers := []*FeedTracker{}
 	for _, sub := range subs {
 		// Create a Reddit feed tracker and run it
-		tracker := NewTracker(sub)
+		tracker := NewTracker(sub, *debug)
 		activeTrackers = append(activeTrackers, &tracker)
 		go tracker.Run()
 	}
