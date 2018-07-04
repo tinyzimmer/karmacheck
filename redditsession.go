@@ -26,7 +26,8 @@ import (
 )
 
 type RepostBot struct {
-	bot reddit.Bot
+	bot    reddit.Bot
+	dryRun bool
 }
 
 func (r *RepostBot) Post(p *reddit.Post) (err error) {
@@ -37,7 +38,11 @@ func (r *RepostBot) Post(p *reddit.Post) (err error) {
 		if kdIsConfident([]byte(res)) {
 			log.Println(LOCAL_FOUND_MATCHES_MESSAGE)
 			fmt.Println(res)
-			return r.bot.Reply(p.Name, res)
+			if !r.dryRun {
+				return r.bot.Reply(p.Name, res)
+			} else {
+				log.Println("Running dry-run mode. Skipping reply.")
+			}
 		} else {
 			log.Println(LOCAL_BELOW_CONFIDENCE_MESSAGE)
 		}
@@ -45,13 +50,19 @@ func (r *RepostBot) Post(p *reddit.Post) (err error) {
 	return
 }
 
-func StartRedditSession(subs []string) {
+func StartRedditSession(subs []string, dryRun bool) {
 	if bot, err := reddit.NewBotFromAgentFile("bot.agent", 0); err != nil {
 		log.Fatal("Failed to create bot handle: ", err)
 	} else {
 		cfg := graw.Config{Subreddits: subs}
-		handler := &RepostBot{bot: bot}
+		handler := &RepostBot{
+			bot:    bot,
+			dryRun: dryRun,
+		}
 		log.Printf("Starting repost trackers for subs: %v\n", subs)
+		if dryRun {
+			log.Printf("Running in dry-run mode. Will not reply to posts.")
+		}
 		if _, wait, err := graw.Run(handler, bot, cfg); err != nil {
 			fmt.Println("Failed to start graw run: ", err)
 		} else {

@@ -70,7 +70,7 @@ const (
 )
 
 var (
-	debug      = flag.Bool("d", false, "Debug")
+	dryRun     = flag.Bool("d", false, "Dry Run. Do not reply to posts.")
 	subreddits = flag.String("s", "", "Comma separated list of subs to watch")
 )
 
@@ -88,6 +88,6 @@ func main() {
 		os.Exit(EXIT_INVALID_SUBREDDIT)
 	}
 
-	StartRedditSession(subs)
+	StartRedditSession(subs, *dryRun)
 
 }

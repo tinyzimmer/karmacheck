@@ -4,7 +4,7 @@
 Unofficial KarmaDecay checker for watching subreddits
 
 Currently watches a subreddit (or list of subreddits) for new posts, and runs new submissions against KarmaDecay.
-The program fetches the markdown comment from the KarmaDecay page and prints it to the terminal.
+The program fetches the markdown comment from the KarmaDecay page and prints it to the terminal, and now will also reply to the post.
 
 Pre-compiled binaries for Windows, Linux, and macOS can be found in the [releases](https://github.com/tinyzimmer/karmacheck/releases) section.
 
@@ -32,7 +32,7 @@ $> go build .
 ```bash
 $> ./karmacheck
 Usage of karmacheck:
-  -d    Debug
+  -d    Dry Run. Do not reply to posts.
   -s string
         Comma separated list of subs to watch
 ```
