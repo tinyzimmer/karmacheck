@@ -19,50 +19,19 @@ package main
 
 import (
 	"errors"
-	"flag"
 	"fmt"
 	"io/ioutil"
 	"log"
 	"net/http"
-	"os"
 	"regexp"
 	"strings"
 )
 
-const (
-	EXIT_NO_ARGS                         = 1
-	EXIT_INVALID_SUBREDDIT               = 2
-	REDDIT_URL                           = "https://www.reddit.com"
-	KARMA_DECAY_URL                      = "https://www.karmadecay.com"
-	RSS_ARG                              = ".rss"
-	RSS_URL_FORMAT                       = "%s/r/%s/new/%s"
-	REQUEST_AGENT_HEADER                 = "User-Agent"
-	REQUEST_AGENT                        = "RepostBot by u/jews4beer"
-	NO_CONTENT_ERROR                     = "KarmaDecay could not locate any media in the post"
-	NO_SIMILAR_POSTS_ERROR               = "KarmaDecay could not find any similar posts"
-	MALFORMED_URL_ERROR                  = "Malformed URL: %s"
-	NO_SUBREDDIT_ERROR                   = "Invalid subreddit"
-	KARMA_DECAY_NO_CONTENT_STRING        = "Unable to find an image"
-	LOCAL_FOUND_MATCHES_MESSAGE          = "Found matches. Below is the reddit comment text."
-	LOCAL_BELOW_CONFIDENCE_MESSAGE       = "KarmaDecay response scored below the confidence threshold"
-	MARKDOWN_SEARCH_REGEX                = "Anyone[^<]*"
-	MARKDOWN_LINK_REGEX                  = "\\[.*\\]\\(.*\\)"
-	MARKDOWN_VALID_CHECK                 = "[Source: karmadecay]"
-	FEEDTRACKER_CHECKED_ENTRIES_MAX      = 100
-	REDDIT_CHECK_SLEEP_TIME              = 10
-	KARMA_DECAY_SLEEP_TIME               = 3
-	KARMA_DECAY_COMMENT_LINKS_CONFIDENCE = 2
-)
-
-var (
-	subreddit = flag.String("s", "", "Subreddit to watch")
-)
-
-func checkSub(sub *string) (err error) {
+func checkSubs(arg *string) (subs []string, err error) {
 
 	// Checks that subreddit is defined. More checks can be added here later.
-
-	if *sub == "" {
+	subs = strings.Split(*arg, ",")
+	if len(subs) == 0 {
 		err = errors.New(NO_SUBREDDIT_ERROR)
 	}
 	return
@@ -186,25 +155,5 @@ func checkKarmaDecay(entry Entry) (resp string, err error) {
 		}
 	}
 	return
-
-}
-
-func main() {
-
-	if len(os.Args) == 1 {
-		flag.Usage()
-		os.Exit(EXIT_NO_ARGS)
-	}
-	flag.Parse()
-	err := checkSub(subreddit) // make sure subreddit is defined
-	if err != nil {
-		log.Println(err)
-		flag.Usage()
-		os.Exit(EXIT_INVALID_SUBREDDIT)
-	}
-
-	// Create a Reddit feed tracker and run it
-	tracker := FeedTracker{subreddit, []Entry{}}
-	tracker.Run()
 
 }

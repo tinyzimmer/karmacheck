@@ -30,7 +30,7 @@ $> go build .
 
 ## Usage
 ```bash
-$> ./karmacheck -s <subreddit>
+$> ./karmacheck -s <subreddit> # spawn multiple trackers with a comma separated list
 ```
 
 #### Example

@@ -21,6 +21,7 @@ import (
 	"encoding/xml"
 	"fmt"
 	"log"
+	"os"
 	"time"
 )
 
@@ -63,8 +64,33 @@ type Author struct {
 }
 
 type FeedTracker struct {
-	Subreddit      *string
+	Subreddit      string
+	Running        bool
 	CheckedEntries []Entry
+}
+
+func ManageTrackers(trackers []FeedTracker) {
+	var active int
+	var tracker FeedTracker
+	for {
+		active = 0
+		for _, tracker = range trackers {
+			if tracker.Running {
+				active += 1
+			}
+		}
+		if active != len(trackers) {
+			log.Println("One or more trackers have stopped running. Exiting.")
+			os.Exit(EXIT_DEAD_TRACKER)
+		}
+		time.Sleep(time.Second * CHECK_TRACKER_SLEEP_TIME)
+	}
+}
+
+func NewTracker(sub string) (tracker FeedTracker) {
+	tracker.Subreddit = sub
+	tracker.Running = true
+	return
 }
 
 func (f *FeedTracker) Run() {
@@ -75,10 +101,12 @@ func (f *FeedTracker) Run() {
 
 	for {
 
-		log.Printf("Polling subreddit: r/%s\n", *f.Subreddit)
+		log.Printf("Polling subreddit: r/%s\n", f.Subreddit)
 		data, err := f.GetLatestSubmissions() // get latest reddit posts
 		if err != nil {
-			log.Fatal(err)
+			log.Printf("ERROR: Error polling results from sub r/%s\n", f.Subreddit)
+			f.Running = false
+			return
 		}
 		// iterate through the response and check each entry
 
@@ -108,7 +136,9 @@ func (f *FeedTracker) Run() {
 func (f *FeedTracker) InitializeCheckedEntries() {
 	data, err := f.GetLatestSubmissions()
 	if err != nil {
-		log.Fatal(err)
+		f.Running = false
+		log.Printf("ERROR: Failed to initiate tracker for sub r/%s\n", f.Subreddit)
+		return
 	}
 	for _, entry := range data {
 		f.RecordEntry(entry)
@@ -127,9 +157,10 @@ func (f *FeedTracker) GetLatestSubmissions() (entries []Entry, err error) {
 
 	// Poll the reddit RSS feed for the latest submissions from a subreddit
 
-	url := fmt.Sprintf(RSS_URL_FORMAT, REDDIT_URL, *f.Subreddit, RSS_ARG)
+	url := fmt.Sprintf(RSS_URL_FORMAT, REDDIT_URL, f.Subreddit, RSS_ARG)
 	resp, err := getUrl(url)
 	if err != nil {
+		f.Running = false
 		return
 	}
 	feed := Feed{}
