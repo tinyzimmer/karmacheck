@@ -37,7 +37,7 @@ const (
 
 	// Request Agent
 	REQUEST_AGENT_HEADER = "User-Agent"
-	REQUEST_AGENT        = "KarmaCheck/v0.6 by u/jews4beer"
+	REQUEST_AGENT        = "KarmaCheck/v0.7 by u/jews4beer"
 
 	// Error strings
 	NO_CONTENT_ERROR       = "KarmaDecay could not locate any media in the post"
