@@ -72,6 +72,7 @@ const (
 var (
 	dryRun     = flag.Bool("d", false, "Dry Run. Do not reply to posts.")
 	subreddits = flag.String("s", "", "Comma separated list of subs to watch")
+	config     = flag.String("c", "./bot.agent", "Path to Bot Configuration.")
 )
 
 func main() {
@@ -88,6 +89,6 @@ func main() {
 		os.Exit(EXIT_INVALID_SUBREDDIT)
 	}
 
-	StartRedditSession(subs, *dryRun)
+	StartRedditSession(*config, subs, *dryRun)
 
 }

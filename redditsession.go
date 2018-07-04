@@ -50,8 +50,8 @@ func (r *RepostBot) Post(p *reddit.Post) (err error) {
 	return
 }
 
-func StartRedditSession(subs []string, dryRun bool) {
-	if bot, err := reddit.NewBotFromAgentFile("bot.agent", 0); err != nil {
+func StartRedditSession(config string, subs []string, dryRun bool) {
+	if bot, err := reddit.NewBotFromAgentFile(config, 0); err != nil {
 		log.Fatal("Failed to create bot handle: ", err)
 	} else {
 		cfg := graw.Config{Subreddits: subs}

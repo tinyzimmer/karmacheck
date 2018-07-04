@@ -32,9 +32,11 @@ $> go build .
 ```bash
 $> ./karmacheck
 Usage of karmacheck:
-  -d    Dry Run. Do not reply to posts.
-  -s string
-        Comma separated list of subs to watch
+-c string
+      Path to Bot Configuration. (default "./bot.agent")
+-d    Dry Run. Do not reply to posts.
+-s string
+      Comma separated list of subs to watch
 ```
 
 I switched to the graw library. So you'll have to create a bot and get creds if you want to use it.
