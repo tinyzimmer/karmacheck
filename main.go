@@ -24,26 +24,44 @@ import (
 )
 
 const (
-	EXIT_NO_ARGS                         = 1
-	EXIT_INVALID_SUBREDDIT               = 2
-	EXIT_DEAD_TRACKER                    = 3
-	REDDIT_URL                           = "https://www.reddit.com"
-	KARMA_DECAY_URL                      = "https://www.karmadecay.com"
-	RSS_ARG                              = ".rss"
-	RSS_URL_FORMAT                       = "%s/r/%s/new/%s"
-	REQUEST_AGENT_HEADER                 = "User-Agent"
-	REQUEST_AGENT                        = "KarmaCheck by u/jews4beer"
-	NO_CONTENT_ERROR                     = "KarmaDecay could not locate any media in the post"
-	NO_SIMILAR_POSTS_ERROR               = "KarmaDecay could not find any similar posts"
-	EMPTY_SUBREDDIT_ERROR                = "The subreddit does not appear to have any posts"
-	MALFORMED_URL_ERROR                  = "Malformed URL: %s"
-	NO_SUBREDDIT_ERROR                   = "Invalid subreddit"
-	KARMA_DECAY_NO_CONTENT_STRING        = "Unable to find an image"
-	LOCAL_FOUND_MATCHES_MESSAGE          = "Found matches. Below is the reddit comment text."
-	LOCAL_BELOW_CONFIDENCE_MESSAGE       = "KarmaDecay response scored below the confidence threshold"
-	MARKDOWN_SEARCH_REGEX                = "Anyone[^<]*"
-	MARKDOWN_LINK_REGEX                  = "\\[.*\\]\\(.*\\)"
-	MARKDOWN_VALID_CHECK                 = "[Source: karmadecay]"
+	// Exit Codes
+	EXIT_NO_ARGS           = 1
+	EXIT_INVALID_SUBREDDIT = 2
+	EXIT_DEAD_TRACKER      = 3
+
+	// URL stuff
+	REDDIT_URL      = "https://www.reddit.com"
+	KARMA_DECAY_URL = "https://www.karmadecay.com"
+	RSS_ARG         = ".rss"
+	RSS_URL_FORMAT  = "%s/r/%s/new/%s"
+
+	// Request Agent
+	REQUEST_AGENT_HEADER = "User-Agent"
+	REQUEST_AGENT        = "KarmaCheck/v0.6 by u/jews4beer"
+
+	// Error strings
+	NO_CONTENT_ERROR       = "KarmaDecay could not locate any media in the post"
+	NO_SIMILAR_POSTS_ERROR = "KarmaDecay could not find any similar posts"
+	EMPTY_SUBREDDIT_ERROR  = "The subreddit does not appear to have any posts"
+	MALFORMED_URL_ERROR    = "Malformed URL: %s"
+	NO_SUBREDDIT_ERROR     = "Invalid subreddit"
+	FAILED_INIT_ERROR      = "ERROR: Failed to initiate tracker for sub r/%s: %s\n"
+	FAILED_POLL_ERROR      = "ERROR: Error polling results from sub r/%s: %s"
+	DEAD_TRACKER_ERROR     = "One or more trackers have stopped running. Exiting."
+
+	// KarmaDecay scrape strings
+	KARMA_DECAY_NO_CONTENT_STRING = "Unable to find an image"
+
+	// Local print messages
+	LOCAL_FOUND_MATCHES_MESSAGE    = "Found matches. Below is the reddit comment text."
+	LOCAL_BELOW_CONFIDENCE_MESSAGE = "KarmaDecay response scored below the confidence threshold"
+
+	// KarmaDecay regex search strings
+	MARKDOWN_SEARCH_REGEX = "Anyone[^<]*"
+	MARKDOWN_LINK_REGEX   = "\\[.*\\]\\(.*\\)"
+	MARKDOWN_VALID_CHECK  = "[Source: karmadecay]"
+
+	// Other defaults
 	FEEDTRACKER_CHECKED_ENTRIES_MAX      = 100
 	REDDIT_CHECK_SLEEP_TIME              = 10
 	KARMA_DECAY_SLEEP_TIME               = 3

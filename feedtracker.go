@@ -85,7 +85,7 @@ func ManageTrackers(trackers []*FeedTracker) {
 			}
 		}
 		if active != len(trackers) {
-			log.Println("One or more trackers have stopped running. Exiting.")
+			log.Println(DEAD_TRACKER_ERROR)
 			os.Exit(EXIT_DEAD_TRACKER)
 		}
 		time.Sleep(time.Second * CHECK_TRACKER_SLEEP_TIME)
@@ -117,7 +117,7 @@ func (f *FeedTracker) Run() {
 		}
 		data, err := f.GetLatestSubmissions() // get latest reddit posts
 		if err != nil {
-			log.Printf("ERROR: Error polling results from sub r/%s: %s", f.Subreddit, err.Error())
+			log.Printf(FAILED_POLL_ERROR, f.Subreddit, err.Error())
 			f.Die()
 			return
 		}
@@ -149,7 +149,7 @@ func (f *FeedTracker) Run() {
 func (f *FeedTracker) InitializeCheckedEntries() (err error) {
 	data, err := f.GetLatestSubmissions()
 	if err != nil {
-		log.Printf("ERROR: Failed to initiate tracker for sub r/%s: %s\n", f.Subreddit, err.Error())
+		log.Printf(FAILED_INIT_ERROR, f.Subreddit, err.Error())
 		return
 	}
 	for _, entry := range data {
