@@ -35,6 +35,7 @@ const (
 	REQUEST_AGENT                        = "KarmaCheck by u/jews4beer"
 	NO_CONTENT_ERROR                     = "KarmaDecay could not locate any media in the post"
 	NO_SIMILAR_POSTS_ERROR               = "KarmaDecay could not find any similar posts"
+	EMPTY_SUBREDDIT_ERROR                = "The subreddit does not appear to have any posts"
 	MALFORMED_URL_ERROR                  = "Malformed URL: %s"
 	NO_SUBREDDIT_ERROR                   = "Invalid subreddit"
 	KARMA_DECAY_NO_CONTENT_STRING        = "Unable to find an image"
@@ -68,11 +69,11 @@ func main() {
 		os.Exit(EXIT_INVALID_SUBREDDIT)
 	}
 
-	activeTrackers := []FeedTracker{}
+	activeTrackers := []*FeedTracker{}
 	for _, sub := range subs {
 		// Create a Reddit feed tracker and run it
 		tracker := NewTracker(sub)
-		activeTrackers = append(activeTrackers, tracker)
+		activeTrackers = append(activeTrackers, &tracker)
 		go tracker.Run()
 	}
 
