@@ -32,7 +32,7 @@ const (
 	RSS_ARG                              = ".rss"
 	RSS_URL_FORMAT                       = "%s/r/%s/new/%s"
 	REQUEST_AGENT_HEADER                 = "User-Agent"
-	REQUEST_AGENT                        = "RepostBot by u/jews4beer"
+	REQUEST_AGENT                        = "KarmaCheck by u/jews4beer"
 	NO_CONTENT_ERROR                     = "KarmaDecay could not locate any media in the post"
 	NO_SIMILAR_POSTS_ERROR               = "KarmaDecay could not find any similar posts"
 	MALFORMED_URL_ERROR                  = "Malformed URL: %s"
