@@ -104,11 +104,11 @@ func (f *FeedTracker) Run() {
 	if f.Debug {
 		log.Println("DEBUG: Whitelisting pre-existing entries")
 	}
-	//err := f.InitializeCheckedEntries() // skip over pre-existing posts
-	//if err != nil {
-	//	f.Die()
-	//	return
-	//}
+	err := f.InitializeCheckedEntries() // skip over pre-existing posts
+	if err != nil {
+		f.Die()
+		return
+	}
 	log.Printf("Subreddit tracker started for r/%s\n", f.Subreddit)
 
 	for {
