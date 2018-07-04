@@ -42,7 +42,7 @@ func kdIsConfident(content []byte) (res bool) {
 
 	re := regexp.MustCompile(MARKDOWN_LINK_REGEX)
 	data := re.FindAll(content, -1)
-	if len(data) <= KARMA_DECAY_COMMENT_LINKS_CONFIDENCE {
+	if len(data) < KARMA_DECAY_COMMENT_LINKS_CONFIDENCE {
 		res = false
 	} else {
 		res = true
