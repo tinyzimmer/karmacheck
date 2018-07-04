@@ -25,6 +25,9 @@ import (
 	"net/http"
 	"regexp"
 	"strings"
+	"time"
+
+	"github.com/turnage/graw/reddit"
 )
 
 func checkSubs(arg *string) (subs []string, err error) {
@@ -79,21 +82,6 @@ func hasContent(content []byte) (res bool) {
 
 }
 
-func getCommentUrl(fullUrl string) (commentUrl string, err error) {
-
-	// removes https and the domain from a full URL. Just showing the
-	// subreddit/comment part of it.
-
-	splitUrl := strings.Split(fullUrl, "/")
-	if len(splitUrl) <= 4 { // make sure the URL split is of valid length
-		err = errors.New(fmt.Sprintf(MALFORMED_URL_ERROR, fullUrl))
-		return
-	}
-	commentUrl = strings.Join(splitUrl[3:], "/")
-	return
-
-}
-
 func getUrl(url string) (response []byte, err error) {
 
 	// Does a GET request against a URL using the User-Agent header defined above.
@@ -115,27 +103,18 @@ func getUrl(url string) (response []byte, err error) {
 
 }
 
-func checkKarmaDecay(entry Entry) (resp string, err error) {
+func checkKarmaDecay(p reddit.Post) (resp string, err error) {
 
-	// Make sure our URL is legit
+	// Get the KarmaDecay URL
 
-	if !strings.Contains(entry.Link.Href, "reddit") {
-		err = errors.New(fmt.Sprintf(MALFORMED_URL_ERROR, entry.Link.Href))
-		return
-	}
-
-	// Replace the reddit part of the URL with karmadecay
-
-	karmaUrl := strings.Replace(entry.Link.Href, REDDIT_URL, KARMA_DECAY_URL, 1)
-	commentUrl, err := getCommentUrl(karmaUrl)
+	karmaUrl := fmt.Sprintf("%s%s", KARMA_DECAY_URL, p.Permalink)
 	if err != nil {
 		return
 	}
-	log.Printf("Checking KarmaDecay for: %s\n", commentUrl)
-	log.Printf("Author: %s\n", entry.Author.Name)
-	log.Printf("Title: %s\n", entry.Title)
-	log.Printf("Link: %s", entry.Link.Href)
-	log.Printf("Created: %s", entry.Updated)
+	log.Printf("Checking KarmaDecay for: %s\n", p.Permalink)
+	log.Printf("Author: u/%s\n", p.Author)
+	log.Printf("Title: %s\n", p.Title)
+	log.Printf("Created: %s", time.Unix(int64(p.CreatedUTC), 0))
 
 	// Get the content of the KarmaDecay page for that post. May take 10-20
 	// seconds on a post that is indeed OC

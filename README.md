@@ -37,6 +37,12 @@ Usage of karmacheck:
         Comma separated list of subs to watch
 ```
 
+I switched to the graw library. So you'll have to create a bot and get creds if you want to use it.
+
+```bash
+$> cp bot.agent.sample bot.agent # edit fields as required
+```
+
 #### Example
 ```powershell
 PS C:\Users\tinyzimmer\Desktop\Development\karmacheck> .\karmacheck.exe -s funny

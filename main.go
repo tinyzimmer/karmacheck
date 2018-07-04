@@ -88,14 +88,6 @@ func main() {
 		os.Exit(EXIT_INVALID_SUBREDDIT)
 	}
 
-	activeTrackers := []*FeedTracker{}
-	for _, sub := range subs {
-		// Create a Reddit feed tracker and run it
-		tracker := NewTracker(sub, *debug)
-		activeTrackers = append(activeTrackers, &tracker)
-		go tracker.Run()
-	}
-
-	ManageTrackers(activeTrackers)
+	StartRedditSession(subs)
 
 }

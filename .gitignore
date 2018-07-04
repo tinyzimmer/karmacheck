@@ -5,6 +5,9 @@
 *.so
 *.dylib
 
+# local bot config
+bot.agent
+
 # Test binary, build with `go test -c`
 *.test
 
