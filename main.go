@@ -32,8 +32,6 @@ const (
 	// URL stuff
 	REDDIT_URL      = "https://www.reddit.com"
 	KARMA_DECAY_URL = "https://www.karmadecay.com"
-	RSS_ARG         = ".rss"
-	RSS_URL_FORMAT  = "%s/r/%s/new/%s"
 
 	// Request Agent
 	REQUEST_AGENT_HEADER = "User-Agent"
@@ -62,10 +60,6 @@ const (
 	MARKDOWN_VALID_CHECK  = "[Source: karmadecay]"
 
 	// Other defaults
-	FEEDTRACKER_CHECKED_ENTRIES_MAX      = 100
-	REDDIT_CHECK_SLEEP_TIME              = 10
-	KARMA_DECAY_SLEEP_TIME               = 3
-	CHECK_TRACKER_SLEEP_TIME             = 3
 	KARMA_DECAY_COMMENT_LINKS_CONFIDENCE = 2
 )
 
