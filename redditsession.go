@@ -37,6 +37,7 @@ func (r *RepostBot) Post(p *reddit.Post) (err error) {
 		if kdIsConfident([]byte(res)) {
 			log.Println(LOCAL_FOUND_MATCHES_MESSAGE)
 			fmt.Println(res)
+			return r.bot.Reply(p.Name, res)
 		} else {
 			log.Println(LOCAL_BELOW_CONFIDENCE_MESSAGE)
 		}

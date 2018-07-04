@@ -12,7 +12,7 @@ Pre-compiled binaries for Windows, Linux, and macOS can be found in the [release
 
  - Tested on Go 1.10.2 windows/linux/macOS
 
-#### Build
+### Build
 
 Using go:
 
@@ -43,7 +43,7 @@ I switched to the graw library. So you'll have to create a bot and get creds if 
 $> cp bot.agent.sample bot.agent # edit fields as required
 ```
 
-#### Example
+### Example
 ```powershell
 PS C:\Users\tinyzimmer\Desktop\Development\karmacheck> .\karmacheck.exe -s funny
 2018/07/03 08:22:27 Checking KarmaDecay for: r/funny/comments/8vt1il/praise_the_ol_mighty/
@@ -71,8 +71,10 @@ title | points | age | /r/ | comnts
 *[Source: karmadecay](http://karmadecay.com/r/PeopleFuckingDying/comments/8vsv4a/woman_is_consumed_alive_by_vicious_animals/) (B = bigger)*
 ```
 
+#### Example of replying to a repost
+![repost example](doc/example_reply.png)
+
 ## TODO
 
  - The examples are off with the most current version
- - Just need to write the bit that can post comments now, torn between rolling a quick one or going all out with [graw](https://github.com/turnage/graw)
  - Write deployment examples, probably ansible or terraform
