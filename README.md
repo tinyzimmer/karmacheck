@@ -30,7 +30,11 @@ $> go build .
 
 ## Usage
 ```bash
-$> ./karmacheck -s <subreddit> # spawn multiple trackers with a comma separated list
+$> ./karmacheck
+Usage of karmacheck:
+  -d    Debug
+  -s string
+        Comma separated list of subs to watch
 ```
 
 #### Example
@@ -60,3 +64,9 @@ title | points | age | /r/ | comnts
 
 *[Source: karmadecay](http://karmadecay.com/r/PeopleFuckingDying/comments/8vsv4a/woman_is_consumed_alive_by_vicious_animals/) (B = bigger)*
 ```
+
+## TODO
+
+ - The examples are off with the most current version
+ - Just need to write the bit that can post comments now, torn between rolling a quick one or going all out with [graw](https://github.com/turnage/graw)
+ - Write deployment examples, probably ansible or terraform
